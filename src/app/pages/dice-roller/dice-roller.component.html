@@ -1,1 +1,16 @@
-<p>dice-roller works!</p>
+<div class="dice-container" *ngIf="isRolling || showResult">
+  <div class="dice-animation" [class.rolling]="isRolling">
+    <div class="dice" *ngFor="let die of diceResults; let i = index"
+         [class.dropped]="i === droppedIndex"
+         [class.rolling]="isRolling">
+      <div class="die-face">{{ die }}</div>
+    </div>
+  </div>
+  <div class="result" *ngIf="!isRolling && showResult">
+    <p class="total">Total: {{ total }}</p>
+    <p class="breakdown">Dados: {{ diceResults.join(', ') }}</p>
+    <p class="dropped" *ngIf="droppedIndex !== -1">
+      Descartado: {{ diceResults[droppedIndex] }}
+    </p>
+  </div>
+</div>
