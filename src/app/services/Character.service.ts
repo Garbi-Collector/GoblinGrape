@@ -6,15 +6,6 @@ import { CharacterSheet, CharacterTheme } from '../models/Character';
   providedIn: 'root'
 })
 export class CharacterService {
-  private autoFillEnabled = new BehaviorSubject<boolean>(true);
-  public autoFillEnabled$ = this.autoFillEnabled.asObservable();
-
-  private currentTheme = new BehaviorSubject<CharacterTheme>(this.getDefaultTheme());
-  public currentTheme$ = this.currentTheme.asObservable();
-
-  private characterSheet = new BehaviorSubject<CharacterSheet>(this.getEmptyCharacter());
-  public characterSheet$ = this.characterSheet.asObservable();
-
   private predefinedThemes: CharacterTheme[] = [
     {
       id: 'classic',
@@ -67,6 +58,15 @@ export class CharacterService {
       borderColor: '#8B0000'
     }
   ];
+
+  private autoFillEnabled = new BehaviorSubject<boolean>(true);
+  public autoFillEnabled$ = this.autoFillEnabled.asObservable();
+
+  private currentTheme = new BehaviorSubject<CharacterTheme>(this.predefinedThemes[1]);
+  public currentTheme$ = this.currentTheme.asObservable();
+
+  private characterSheet = new BehaviorSubject<CharacterSheet>(this.getEmptyCharacter());
+  public characterSheet$ = this.characterSheet.asObservable();
 
   constructor() { }
 
@@ -206,9 +206,5 @@ export class CharacterService {
       { name: 'Stealth', ability: 'dexterity', proficient: false, value: 0 },
       { name: 'Survival', ability: 'wisdom', proficient: false, value: 0 }
     ];
-  }
-
-  private getDefaultTheme(): CharacterTheme {
-    return this.predefinedThemes[1]; // Goblin Grape by default
   }
 }

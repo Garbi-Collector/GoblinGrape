@@ -1,23 +1,20 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {CommonModule, NgForOf, NgIf} from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
-import {CharacterSheet, CharacterTheme} from "../../models/Character";
 import {CharacterService} from "../../services/Character.service";
 import {PdfService} from "../../services/Pdf.service";
+import {CharacterSheet, CharacterTheme} from "../../models/Character";
 import {DiceRollerComponent} from "../dice-roller/dice-roller.component";
+
+type AbilityKey = 'strength' | 'dexterity' | 'constitution' | 'intelligence' | 'wisdom' | 'charisma';
 
 @Component({
   selector: 'app-creator',
   standalone: true,
-  imports: [
-    NgForOf,
-    NgIf,
-    FormsModule,
-    DiceRollerComponent
-  ],
+  imports: [CommonModule, FormsModule, DiceRollerComponent],
   templateUrl: './creator.component.html',
-  styleUrl: './creator.component.scss'
+  styleUrls: ['./creator.component.scss']
 })
 export class CreatorComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
@@ -28,6 +25,10 @@ export class CreatorComponent implements OnInit, OnDestroy {
   autoFillEnabled = true;
   sidebarOpen = true;
   customThemeMode = false;
+
+  // Typed arrays for template
+  readonly abilityKeys: AbilityKey[] = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
+  readonly savingThrowKeys: AbilityKey[] = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma'];
 
   // Dice rolling animation
   isRollingDice = false;
@@ -123,22 +124,19 @@ export class CreatorComponent implements OnInit, OnDestroy {
     document.documentElement.style.setProperty('--border-color', theme.borderColor);
   }
 
-  rollAbilityScore(abilityName: string): void {
+  rollAbilityScore(abilityName: AbilityKey): void {
     this.currentRollingAbility = abilityName;
     this.isRollingDice = true;
     this.showDiceResult = false;
 
-    // Simulate rolling animation
     setTimeout(() => {
       const rolls = Array.from({ length: 4 }, () => Math.floor(Math.random() * 6) + 1);
       this.diceResults = [...rolls];
 
-      // Find lowest die
       const sortedRolls = [...rolls].sort((a, b) => a - b);
       const lowestValue = sortedRolls[0];
       this.droppedDiceIndex = rolls.indexOf(lowestValue);
 
-      // Calculate total
       const total = rolls.reduce((sum, val, idx) =>
         idx === this.droppedDiceIndex ? sum : sum + val, 0);
       this.diceTotal = total;
@@ -153,7 +151,6 @@ export class CreatorComponent implements OnInit, OnDestroy {
         this.saveCharacter();
       }
 
-      // Hide result after 3 seconds
       setTimeout(() => {
         this.showDiceResult = false;
         this.currentRollingAbility = null;
@@ -165,7 +162,7 @@ export class CreatorComponent implements OnInit, OnDestroy {
     return Math.floor((score - 10) / 2);
   }
 
-  updateAbilityScore(abilityName: string, score: number): void {
+  updateAbilityScore(abilityName: AbilityKey, score: number): void {
     this.character.abilities[abilityName].score = score;
     this.character.abilities[abilityName].modifier = this.calculateModifier(score);
     this.updateCalculatedFields();
@@ -173,25 +170,21 @@ export class CreatorComponent implements OnInit, OnDestroy {
   }
 
   updateCalculatedFields(): void {
-    // Update initiative
     this.character.initiative = this.character.abilities.dexterity.modifier;
 
-    // Update saving throws
     Object.keys(this.character.savingThrows).forEach(key => {
-      const abilityKey = key as keyof typeof this.character.abilities;
+      const abilityKey = key as AbilityKey;
       const save = this.character.savingThrows[abilityKey];
       const abilityMod = this.character.abilities[abilityKey].modifier;
       save.value = abilityMod + (save.proficient ? this.character.proficiencyBonus : 0);
     });
 
-    // Update skills
     this.character.skills.forEach(skill => {
-      const abilityKey = skill.ability as keyof typeof this.character.abilities;
+      const abilityKey = skill.ability as AbilityKey;
       const abilityMod = this.character.abilities[abilityKey].modifier;
       skill.value = abilityMod + (skill.proficient ? this.character.proficiencyBonus : 0);
     });
 
-    // Update passive perception
     const perceptionSkill = this.character.skills.find(s => s.name === 'Perception');
     this.character.passivePerception = 10 + (perceptionSkill?.value || 0);
   }
@@ -205,7 +198,7 @@ export class CreatorComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleSavingThrowProficiency(ability: string): void {
+  toggleSavingThrowProficiency(ability: AbilityKey): void {
     this.character.savingThrows[ability].proficient = !this.character.savingThrows[ability].proficient;
     this.updateCalculatedFields();
     this.saveCharacter();

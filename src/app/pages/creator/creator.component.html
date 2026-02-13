@@ -5,7 +5,6 @@
       <button class="menu-btn" (click)="toggleSidebar()">☰</button>
       <h1 class="app-title">🍇 GoblinGrape</h1>
     </div>
-
     <div class="topbar-center">
       <label class="auto-fill-toggle">
         <input type="checkbox"
@@ -14,24 +13,20 @@
         <span>Auto-completar al tirar dados</span>
       </label>
     </div>
-
     <div class="topbar-right">
       <button class="btn-export" (click)="exportToPDF()">
         📄 Exportar PDF
       </button>
     </div>
   </header>
-
   <div class="main-layout">
     <!-- Sidebar -->
     <aside class="sidebar" [class.open]="sidebarOpen">
       <div class="sidebar-content">
         <h2>Configuración</h2>
-
         <!-- Theme Selection -->
         <section class="config-section">
           <h3>Tema de la Hoja</h3>
-
           <div class="theme-grid">
             <button *ngFor="let theme of predefinedThemes"
                     class="theme-card"
@@ -42,7 +37,6 @@
               </div>
               <span>{{ theme.name }}</span>
             </button>
-
             <button class="theme-card"
                     [class.active]="customThemeMode"
                     (click)="enableCustomTheme()">
@@ -52,11 +46,9 @@
               <span>Personalizado</span>
             </button>
           </div>
-
           <!-- Custom Colors -->
           <div class="custom-colors" *ngIf="customThemeMode">
             <h4>Colores Personalizados</h4>
-
             <div class="color-input">
               <label>Primario</label>
               <input type="color"
@@ -66,7 +58,6 @@
                      [value]="customColors.primary"
                      (input)="updateCustomColor('primary', $any($event.target).value)">
             </div>
-
             <div class="color-input">
               <label>Secundario</label>
               <input type="color"
@@ -76,7 +67,6 @@
                      [value]="customColors.secondary"
                      (input)="updateCustomColor('secondary', $any($event.target).value)">
             </div>
-
             <div class="color-input">
               <label>Acento</label>
               <input type="color"
@@ -86,7 +76,6 @@
                      [value]="customColors.accent"
                      (input)="updateCustomColor('accent', $any($event.target).value)">
             </div>
-
             <div class="color-input">
               <label>Texto</label>
               <input type="color"
@@ -96,7 +85,6 @@
                      [value]="customColors.text"
                      (input)="updateCustomColor('text', $any($event.target).value)">
             </div>
-
             <div class="color-input">
               <label>Fondo</label>
               <input type="color"
@@ -106,7 +94,6 @@
                      [value]="customColors.background"
                      (input)="updateCustomColor('background', $any($event.target).value)">
             </div>
-
             <div class="color-input">
               <label>Borde</label>
               <input type="color"
@@ -120,7 +107,6 @@
         </section>
       </div>
     </aside>
-
     <!-- Main Character Sheet -->
     <main class="character-sheet-container">
       <div class="character-sheet">
@@ -134,7 +120,6 @@
                      (change)="saveCharacter()">
             </div>
           </div>
-
           <div class="header-row">
             <div class="field">
               <label>Clase y Nivel</label>
@@ -151,14 +136,12 @@
                        max="20">
               </div>
             </div>
-
             <div class="field">
               <label>Trasfondo</label>
               <input type="text"
                      [(ngModel)]="character.background"
                      (change)="saveCharacter()">
             </div>
-
             <div class="field">
               <label>Nombre del Jugador</label>
               <input type="text"
@@ -166,7 +149,6 @@
                      (change)="saveCharacter()">
             </div>
           </div>
-
           <div class="header-row">
             <div class="field">
               <label>Raza</label>
@@ -174,14 +156,12 @@
                      [(ngModel)]="character.race"
                      (change)="saveCharacter()">
             </div>
-
             <div class="field">
               <label>Alineamiento</label>
               <input type="text"
                      [(ngModel)]="character.alignment"
                      (change)="saveCharacter()">
             </div>
-
             <div class="field">
               <label>Puntos de Experiencia</label>
               <input type="number"
@@ -191,30 +171,25 @@
             </div>
           </div>
         </div>
-
         <!-- Core Stats Row -->
         <div class="core-stats">
           <div class="stat-box">
             <label>Clase de Armadura</label>
             <div class="stat-value large">{{ character.armorClass }}</div>
           </div>
-
           <div class="stat-box">
             <label>Iniciativa</label>
             <div class="stat-value">{{ character.initiative >= 0 ? '+' : '' }}{{ character.initiative }}</div>
           </div>
-
           <div class="stat-box">
             <label>Velocidad</label>
             <div class="stat-value">{{ character.speed }}</div>
           </div>
-
           <div class="stat-box">
             <label>Bono de Competencia</label>
             <div class="stat-value">+{{ character.proficiencyBonus }}</div>
           </div>
         </div>
-
         <!-- HP Section -->
         <div class="hp-section">
           <div class="hp-max">
@@ -224,7 +199,6 @@
                    (change)="saveCharacter()"
                    min="1">
           </div>
-
           <div class="hp-current">
             <label>Puntos de Golpe Actuales</label>
             <input type="number"
@@ -232,7 +206,6 @@
                    (change)="saveCharacter()"
                    min="0">
           </div>
-
           <div class="hp-temp">
             <label>Puntos de Golpe Temporales</label>
             <input type="number"
@@ -241,12 +214,11 @@
                    min="0">
           </div>
         </div>
-
         <!-- Abilities -->
         <div class="abilities-section">
           <h2>Habilidades</h2>
           <div class="abilities-grid">
-            <div class="ability-box" *ngFor="let ability of ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma']">
+            <div class="ability-box" *ngFor="let ability of abilityKeys">
               <div class="ability-header">
                 <h3>{{ getAbilityShorthand(ability).toUpperCase() }}</h3>
                 <button class="dice-btn"
@@ -255,7 +227,6 @@
                   🎲
                 </button>
               </div>
-
               <div class="ability-score">
                 <input type="number"
                        [value]="character.abilities[ability].score"
@@ -263,19 +234,17 @@
                        min="1"
                        max="30">
               </div>
-
               <div class="ability-modifier">
                 {{ character.abilities[ability].modifier >= 0 ? '+' : '' }}{{ character.abilities[ability].modifier }}
               </div>
             </div>
           </div>
         </div>
-
         <!-- Saving Throws -->
         <div class="saves-section">
           <h3>Tiradas de Salvación</h3>
           <div class="saves-list">
-            <div class="save-item" *ngFor="let save of ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma']">
+            <div class="save-item" *ngFor="let save of savingThrowKeys">
               <input type="checkbox"
                      [checked]="character.savingThrows[save].proficient"
                      (change)="toggleSavingThrowProficiency(save)"
@@ -287,7 +256,6 @@
             </div>
           </div>
         </div>
-
         <!-- Skills -->
         <div class="skills-section">
           <h3>Habilidades</h3>
@@ -303,13 +271,11 @@
               </label>
             </div>
           </div>
-
           <div class="passive-perception">
             <label>Percepción Pasiva</label>
             <div class="perception-value">{{ character.passivePerception }}</div>
           </div>
         </div>
-
         <!-- Equipment -->
         <div class="equipment-section">
           <h3>Equipo</h3>
@@ -318,7 +284,6 @@
                     rows="4"
                     placeholder="Lista tu equipo aquí..."></textarea>
         </div>
-
         <!-- Features & Traits -->
         <div class="features-section">
           <h3>Rasgos y Características</h3>
@@ -327,7 +292,6 @@
                     rows="6"
                     placeholder="Describe tus rasgos y características..."></textarea>
         </div>
-
         <!-- Personality -->
         <div class="personality-section">
           <div class="personality-grid">
@@ -337,21 +301,18 @@
                         (change)="saveCharacter()"
                         rows="3"></textarea>
             </div>
-
             <div class="personality-field">
               <h3>Ideales</h3>
               <textarea [(ngModel)]="character.ideals"
                         (change)="saveCharacter()"
                         rows="3"></textarea>
             </div>
-
             <div class="personality-field">
               <h3>Vínculos</h3>
               <textarea [(ngModel)]="character.bonds"
                         (change)="saveCharacter()"
                         rows="3"></textarea>
             </div>
-
             <div class="personality-field">
               <h3>Defectos</h3>
               <textarea [(ngModel)]="character.flaws"
@@ -363,7 +324,6 @@
       </div>
     </main>
   </div>
-
   <!-- Dice Roller Animation -->
   <app-dice-roller
     [isRolling]="isRollingDice"
