@@ -1,1 +1,375 @@
-<p>creator works!</p>
+<div class="creator-container">
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="menu-btn" (click)="toggleSidebar()">☰</button>
+      <h1 class="app-title">🍇 GoblinGrape</h1>
+    </div>
+
+    <div class="topbar-center">
+      <label class="auto-fill-toggle">
+        <input type="checkbox"
+               [checked]="autoFillEnabled"
+               (change)="toggleAutoFill()">
+        <span>Auto-completar al tirar dados</span>
+      </label>
+    </div>
+
+    <div class="topbar-right">
+      <button class="btn-export" (click)="exportToPDF()">
+        📄 Exportar PDF
+      </button>
+    </div>
+  </header>
+
+  <div class="main-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" [class.open]="sidebarOpen">
+      <div class="sidebar-content">
+        <h2>Configuración</h2>
+
+        <!-- Theme Selection -->
+        <section class="config-section">
+          <h3>Tema de la Hoja</h3>
+
+          <div class="theme-grid">
+            <button *ngFor="let theme of predefinedThemes"
+                    class="theme-card"
+                    [class.active]="currentTheme.id === theme.id && !customThemeMode"
+                    (click)="selectTheme(theme)">
+              <div class="theme-preview"
+                   [style.background]="'linear-gradient(135deg, ' + theme.primaryColor + ', ' + theme.secondaryColor + ')'">
+              </div>
+              <span>{{ theme.name }}</span>
+            </button>
+
+            <button class="theme-card"
+                    [class.active]="customThemeMode"
+                    (click)="enableCustomTheme()">
+              <div class="theme-preview theme-custom">
+                <span>🎨</span>
+              </div>
+              <span>Personalizado</span>
+            </button>
+          </div>
+
+          <!-- Custom Colors -->
+          <div class="custom-colors" *ngIf="customThemeMode">
+            <h4>Colores Personalizados</h4>
+
+            <div class="color-input">
+              <label>Primario</label>
+              <input type="color"
+                     [value]="customColors.primary"
+                     (change)="updateCustomColor('primary', $any($event.target).value)">
+              <input type="text"
+                     [value]="customColors.primary"
+                     (input)="updateCustomColor('primary', $any($event.target).value)">
+            </div>
+
+            <div class="color-input">
+              <label>Secundario</label>
+              <input type="color"
+                     [value]="customColors.secondary"
+                     (change)="updateCustomColor('secondary', $any($event.target).value)">
+              <input type="text"
+                     [value]="customColors.secondary"
+                     (input)="updateCustomColor('secondary', $any($event.target).value)">
+            </div>
+
+            <div class="color-input">
+              <label>Acento</label>
+              <input type="color"
+                     [value]="customColors.accent"
+                     (change)="updateCustomColor('accent', $any($event.target).value)">
+              <input type="text"
+                     [value]="customColors.accent"
+                     (input)="updateCustomColor('accent', $any($event.target).value)">
+            </div>
+
+            <div class="color-input">
+              <label>Texto</label>
+              <input type="color"
+                     [value]="customColors.text"
+                     (change)="updateCustomColor('text', $any($event.target).value)">
+              <input type="text"
+                     [value]="customColors.text"
+                     (input)="updateCustomColor('text', $any($event.target).value)">
+            </div>
+
+            <div class="color-input">
+              <label>Fondo</label>
+              <input type="color"
+                     [value]="customColors.background"
+                     (change)="updateCustomColor('background', $any($event.target).value)">
+              <input type="text"
+                     [value]="customColors.background"
+                     (input)="updateCustomColor('background', $any($event.target).value)">
+            </div>
+
+            <div class="color-input">
+              <label>Borde</label>
+              <input type="color"
+                     [value]="customColors.border"
+                     (change)="updateCustomColor('border', $any($event.target).value)">
+              <input type="text"
+                     [value]="customColors.border"
+                     (input)="updateCustomColor('border', $any($event.target).value)">
+            </div>
+          </div>
+        </section>
+      </div>
+    </aside>
+
+    <!-- Main Character Sheet -->
+    <main class="character-sheet-container">
+      <div class="character-sheet">
+        <!-- Header -->
+        <div class="sheet-header">
+          <div class="header-row">
+            <div class="field field-large">
+              <label>Nombre del Personaje</label>
+              <input type="text"
+                     [(ngModel)]="character.characterName"
+                     (change)="saveCharacter()">
+            </div>
+          </div>
+
+          <div class="header-row">
+            <div class="field">
+              <label>Clase y Nivel</label>
+              <div class="class-level-group">
+                <input type="text"
+                       [(ngModel)]="character.className"
+                       (change)="saveCharacter()"
+                       placeholder="Clase">
+                <input type="number"
+                       [(ngModel)]="character.level"
+                       (change)="saveCharacter()"
+                       placeholder="Nivel"
+                       min="1"
+                       max="20">
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Trasfondo</label>
+              <input type="text"
+                     [(ngModel)]="character.background"
+                     (change)="saveCharacter()">
+            </div>
+
+            <div class="field">
+              <label>Nombre del Jugador</label>
+              <input type="text"
+                     [(ngModel)]="character.playerName"
+                     (change)="saveCharacter()">
+            </div>
+          </div>
+
+          <div class="header-row">
+            <div class="field">
+              <label>Raza</label>
+              <input type="text"
+                     [(ngModel)]="character.race"
+                     (change)="saveCharacter()">
+            </div>
+
+            <div class="field">
+              <label>Alineamiento</label>
+              <input type="text"
+                     [(ngModel)]="character.alignment"
+                     (change)="saveCharacter()">
+            </div>
+
+            <div class="field">
+              <label>Puntos de Experiencia</label>
+              <input type="number"
+                     [(ngModel)]="character.experiencePoints"
+                     (change)="saveCharacter()"
+                     min="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- Core Stats Row -->
+        <div class="core-stats">
+          <div class="stat-box">
+            <label>Clase de Armadura</label>
+            <div class="stat-value large">{{ character.armorClass }}</div>
+          </div>
+
+          <div class="stat-box">
+            <label>Iniciativa</label>
+            <div class="stat-value">{{ character.initiative >= 0 ? '+' : '' }}{{ character.initiative }}</div>
+          </div>
+
+          <div class="stat-box">
+            <label>Velocidad</label>
+            <div class="stat-value">{{ character.speed }}</div>
+          </div>
+
+          <div class="stat-box">
+            <label>Bono de Competencia</label>
+            <div class="stat-value">+{{ character.proficiencyBonus }}</div>
+          </div>
+        </div>
+
+        <!-- HP Section -->
+        <div class="hp-section">
+          <div class="hp-max">
+            <label>Puntos de Golpe Máximos</label>
+            <input type="number"
+                   [(ngModel)]="character.hitPointMaximum"
+                   (change)="saveCharacter()"
+                   min="1">
+          </div>
+
+          <div class="hp-current">
+            <label>Puntos de Golpe Actuales</label>
+            <input type="number"
+                   [(ngModel)]="character.currentHitPoints"
+                   (change)="saveCharacter()"
+                   min="0">
+          </div>
+
+          <div class="hp-temp">
+            <label>Puntos de Golpe Temporales</label>
+            <input type="number"
+                   [(ngModel)]="character.temporaryHitPoints"
+                   (change)="saveCharacter()"
+                   min="0">
+          </div>
+        </div>
+
+        <!-- Abilities -->
+        <div class="abilities-section">
+          <h2>Habilidades</h2>
+          <div class="abilities-grid">
+            <div class="ability-box" *ngFor="let ability of ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma']">
+              <div class="ability-header">
+                <h3>{{ getAbilityShorthand(ability).toUpperCase() }}</h3>
+                <button class="dice-btn"
+                        (click)="rollAbilityScore(ability)"
+                        title="Tirar dados (4d6, quitar el más bajo)">
+                  🎲
+                </button>
+              </div>
+
+              <div class="ability-score">
+                <input type="number"
+                       [value]="character.abilities[ability].score"
+                       (change)="updateAbilityScore(ability, +$any($event.target).value)"
+                       min="1"
+                       max="30">
+              </div>
+
+              <div class="ability-modifier">
+                {{ character.abilities[ability].modifier >= 0 ? '+' : '' }}{{ character.abilities[ability].modifier }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Saving Throws -->
+        <div class="saves-section">
+          <h3>Tiradas de Salvación</h3>
+          <div class="saves-list">
+            <div class="save-item" *ngFor="let save of ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma']">
+              <input type="checkbox"
+                     [checked]="character.savingThrows[save].proficient"
+                     (change)="toggleSavingThrowProficiency(save)"
+                     [id]="'save-' + save">
+              <label [for]="'save-' + save">
+                <span class="save-value">{{ character.savingThrows[save].value >= 0 ? '+' : '' }}{{ character.savingThrows[save].value }}</span>
+                {{ getAbilityShorthand(save) }}
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skills -->
+        <div class="skills-section">
+          <h3>Habilidades</h3>
+          <div class="skills-list">
+            <div class="skill-item" *ngFor="let skill of character.skills">
+              <input type="checkbox"
+                     [checked]="skill.proficient"
+                     (change)="toggleSkillProficiency(skill.name)"
+                     [id]="'skill-' + skill.name">
+              <label [for]="'skill-' + skill.name">
+                <span class="skill-value">{{ skill.value >= 0 ? '+' : '' }}{{ skill.value }}</span>
+                {{ skill.name }} <span class="skill-ability">({{ getAbilityShorthand(skill.ability) }})</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="passive-perception">
+            <label>Percepción Pasiva</label>
+            <div class="perception-value">{{ character.passivePerception }}</div>
+          </div>
+        </div>
+
+        <!-- Equipment -->
+        <div class="equipment-section">
+          <h3>Equipo</h3>
+          <textarea [(ngModel)]="character.equipment"
+                    (change)="saveCharacter()"
+                    rows="4"
+                    placeholder="Lista tu equipo aquí..."></textarea>
+        </div>
+
+        <!-- Features & Traits -->
+        <div class="features-section">
+          <h3>Rasgos y Características</h3>
+          <textarea [(ngModel)]="character.featuresTraits"
+                    (change)="saveCharacter()"
+                    rows="6"
+                    placeholder="Describe tus rasgos y características..."></textarea>
+        </div>
+
+        <!-- Personality -->
+        <div class="personality-section">
+          <div class="personality-grid">
+            <div class="personality-field">
+              <h3>Rasgos de Personalidad</h3>
+              <textarea [(ngModel)]="character.personalityTraits"
+                        (change)="saveCharacter()"
+                        rows="3"></textarea>
+            </div>
+
+            <div class="personality-field">
+              <h3>Ideales</h3>
+              <textarea [(ngModel)]="character.ideals"
+                        (change)="saveCharacter()"
+                        rows="3"></textarea>
+            </div>
+
+            <div class="personality-field">
+              <h3>Vínculos</h3>
+              <textarea [(ngModel)]="character.bonds"
+                        (change)="saveCharacter()"
+                        rows="3"></textarea>
+            </div>
+
+            <div class="personality-field">
+              <h3>Defectos</h3>
+              <textarea [(ngModel)]="character.flaws"
+                        (change)="saveCharacter()"
+                        rows="3"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Dice Roller Animation -->
+  <app-dice-roller
+    [isRolling]="isRollingDice"
+    [showResult]="showDiceResult"
+    [diceResults]="diceResults"
+    [droppedIndex]="droppedDiceIndex"
+    [total]="diceTotal">
+  </app-dice-roller>
+</div>
